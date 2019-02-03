@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,10 +10,10 @@ public class Board : MonoBehaviour
     #region Global components
 
     //Audio
-    public new AudioSource audio;
+    //public new AudioSource audio;
 
     // Game Objects
-    public GameObject BluePiecePrefab, RedPiecePrefab, GreenPiecePrefab, Back, Reboot;
+    public GameObject BluePiecePrefab, RedPiecePrefab, GreenPiecePrefab;
 
     // Standart player names
     public static string[] PlayersNames = { "Blue", "Green", "Red" };
@@ -46,8 +47,6 @@ public class Board : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;  // Never sleep
         GenerateBoard();                                // Create board for game and place there checkers
-        Back.SetActive(false);                          // Hide back button(need move that to menu what is not created yet)
-        Reboot.SetActive(false);                        // Hide reboot game button(need move that to menu what is not created yet)
         //BM0 = new BotMind(PlayersNames[0]);
         //BM1 = new BotMind(PlayersNames[1]);
         //BM2 = new BotMind(PlayersNames[2]);
@@ -56,50 +55,52 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        //if (BM0.BotName == PlayersNames[Turn - 1])
-        //{
-        //    BM0.WhereWeGo();
-        //    NextTurn();
-        //}
-        //else if (BM1.BotName == PlayersNames[Turn - 1])
-        //{
-        //    BM1.WhereWeGo();
-        //    NextTurn();
-        //}
-        //else
-        //{
-        //    BM2.WhereWeGo();
-        //    NextTurn();
-        //}
-        if (Input.GetKey(KeyCode.Escape)) // If player touch escape on phone
+        try
         {
-            // Create winodws with word " Are you sure want exit from game? "
-
-            //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-        }
-
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == touchPhase) // If we touch something
-        {
-            touchPosWorld = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position); // Get position were we touch
-            Vector2 touchPosWorld2D = new Vector2(touchPosWorld.x, touchPosWorld.y); // Set touched position to Vector2
-            RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward); // Get information what we touch
-            if (hitInformation.collider != null)  // If object have colider (all visible must have)
+            //if (BM0.BotName == PlayersNames[Turn - 1])
+            //{
+            //    BM0.WhereWeGo();
+            //    NextTurn();
+            //}
+            //else if (BM1.BotName == PlayersNames[Turn - 1])
+            //{
+            //    BM1.WhereWeGo();
+            //    NextTurn();
+            //}
+            //else
+            //{
+            //    BM2.WhereWeGo();
+            //    NextTurn();
+            //}
+            if (Input.GetKey(KeyCode.Escape)) // If player touch escape on phone
             {
-                GameObject touchedObject = hitInformation.transform.gameObject;
-                if (EndGame()) // Someone win?
-                {
-                    // Show end game window
+                // Create winodws with word " Are you sure want exit from game? "
 
-                    //    if (touchedObject.name == "reboot")
-                    //        RebootFunk();
-                    //    else if (touchedObject.name == "Back")
-                    //        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-                }
-                else
+                //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+            }
+
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == touchPhase) // If we touch something
+            {
+                touchPosWorld = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position); // Get position were we touch
+                Vector2 touchPosWorld2D = new Vector2(touchPosWorld.x, touchPosWorld.y); // Set touched position to Vector2
+                RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward); // Get information what we touch
+                if (hitInformation.collider != null)  // If object have colider (all visible must have)
                 {
-                    MovePiece(touchedObject);
+                    GameObject touchedObject = hitInformation.transform.gameObject;
+                    if (EndGame()) // Someone win?
+                    {
+
+                    }
+                    else
+                    {
+                        MovePiece(touchedObject);
+                    }
                 }
             }
+        }
+        catch(Exception e)
+        {
+            Debug.Log("<color=red>Error: </color>"+e.Message);
         }
     }
 
@@ -211,7 +212,7 @@ public class Board : MonoBehaviour
             {
                 if (CheckMove(touchedObject) == true)
                 {
-                    audio.Play();
+                    //GetComponent<AudioSource>().Play();
                     LstTouchedObject.transform.position = new Vector3(touchedObject.transform.position.x, touchedObject.transform.position.y, touchedObject.transform.position.z - 0.5f);
                     LstTouchedObject.GetComponent<Renderer>().material.color = Color.white;
                     LstTouchedObject = null;
@@ -318,8 +319,6 @@ public class Board : MonoBehaviour
     {
         if (EndGame() == true)
         {
-            Back.SetActive(true);
-            Reboot.SetActive(true);
         }
         else
         {

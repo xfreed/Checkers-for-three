@@ -280,3 +280,5 @@ D:\Unity Projects\Checkers-for-three\obj\Debug\Assembly-CSharp.csproj.CoreCompil
 D:\Unity Projects\Checkers-for-three\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 D:\Unity Projects\Checkers-for-three\obj\Debug\Assembly-CSharp.dll
 D:\Unity Projects\Checkers-for-three\obj\Debug\Assembly-CSharp.pdb
+D:\Unity Projects\Checkers-for-three\Temp\bin\Debug\UnityEngine.SpatialTrackingModule.dll
+D:\Unity Projects\Checkers-for-three\Temp\bin\Debug\UnityEngine.SpatialTrackingModule.xml
