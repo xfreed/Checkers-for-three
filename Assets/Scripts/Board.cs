@@ -232,7 +232,7 @@ public class Board : MonoBehaviour
     {
         bool push = Attack(touchedObject);
         // Set radius ( just move or atack )
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y), push ? 1 : 2.5f);
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y), push ? 0.7f : 1.4f);
         foreach (Collider2D value in hitColliders)
         {
             if (value.gameObject.transform.position.Equals(touchedObject.transform.position) && push)
@@ -259,7 +259,7 @@ public class Board : MonoBehaviour
                                                     new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y));
         foreach (RaycastHit2D value in hits)
         {
-            if (value.transform.name.Contains("Piece(Clone)"))
+            if (value.transform.name.Contains("(Clone)"))
             {
                 switch (Turn)
                 {
