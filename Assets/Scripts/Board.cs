@@ -89,7 +89,6 @@ public class Board : MonoBehaviour
                     GameObject touchedObject = hitInformation.transform.gameObject;
                     if (EndGame()) // Someone win?
                     {
-
                     }
                     else
                     {
@@ -98,9 +97,9 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            Debug.Log("<color=red>Error: </color>"+e.Message);
+            Debug.Log("<color=red>Error: </color>" + e.Message);
         }
     }
 
