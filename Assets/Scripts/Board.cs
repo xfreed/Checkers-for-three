@@ -27,11 +27,6 @@ public class Board : MonoBehaviour
     // Last touched object
     private GameObject LstTouchedObject = null;
 
-    // Currect touched object
-    private Vector3 touchPosWorld;
-
-    // Phase of touching
-    private readonly TouchPhase touchPhase = TouchPhase.Ended;
 
     //Bot mid
     private BotMind BM0;
@@ -47,9 +42,9 @@ public class Board : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;  // Never sleep
         GenerateBoard();                                // Create board for game and place there checkers
-        //BM0 = new BotMind(PlayersNames[0]);
-        //BM1 = new BotMind(PlayersNames[1]);
-        //BM2 = new BotMind(PlayersNames[2]);
+        BM0 = new BotMind(PlayersNames[0]);
+        BM1 = new BotMind(PlayersNames[1]);
+        BM2 = new BotMind(PlayersNames[2]);
     }
 
     // Update is called once per frame
@@ -57,21 +52,21 @@ public class Board : MonoBehaviour
     {
         try
         {
-            //if (BM0.BotName == PlayersNames[Turn - 1])
-            //{
-            //    BM0.WhereWeGo();
-            //    NextTurn();
-            //}
-            //else if (BM1.BotName == PlayersNames[Turn - 1])
-            //{
-            //    BM1.WhereWeGo();
-            //    NextTurn();
-            //}
-            //else
-            //{
-            //    BM2.WhereWeGo();
-            //    NextTurn();
-            //}
+            if (BM0.BotName == PlayersNames[Turn - 1])
+            {
+                BM0.WhereWeGo();
+                NextTurn();
+            }
+            else if (BM1.BotName == PlayersNames[Turn - 1])
+            {
+                BM1.WhereWeGo();
+                NextTurn();
+            }
+            else
+            {
+                BM2.WhereWeGo();
+                NextTurn();
+            }
             if (Input.GetKey(KeyCode.Escape)) // If player touch escape on phone
             {
                 // Create winodws with word " Are you sure want exit from game? "
