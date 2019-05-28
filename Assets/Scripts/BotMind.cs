@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class BotMind /*: MonoBehaviour*/
 {
-    private Board ch = new Board();
+    private readonly Board ch = new Board();
     public string BotName;
 
     public BotMind(string botname)
@@ -15,44 +13,58 @@ public class BotMind /*: MonoBehaviour*/
 
     public void WhereWeGo()
     {
+        // We only go or attack
         bool IfWeGo = false;
-        GameObject[] GO = GameObject.FindGameObjectsWithTag("piece").Where(val => val.name.Contains(BotName)).ToArray();
-        for (int i = 0; i < GO.Length; ++i)//foreach (GameObject item in GO)
+        //Find all bot piece's
+        GameObject[] Pieces = GameObject.FindGameObjectsWithTag("piece").Where(val => val.name.Contains(BotName)).ToArray();
+        for (int i = 0; i < Pieces.Length; ++i)//foreach (GameObject item in GO)
         {
-            GameObject item = GO[Random.Range(0, GO.Length)];
-            // Find enemy pices behind bot piece
+            //Get piece[i]
+            GameObject item = Pieces[Random.Range(0, Pieces.Length)];
+            // Find enemy pices near bot piece[i]
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(item.transform.position.x, item.transform.position.y), 1)
             .Where(val => val.transform.name.Contains("(Clone)") && !val.transform.name.Contains(BotName)).ToArray();
 
-            //if there is some enemy piece check if we can attack them || check is it good place to move piece(check if enemy is nearby)
+            //if there is some enemy piece check if we can attack them and check is it good place to move piece[i](check if enemy is nearby)
+            //nearby hasn't enemy pieces
             if (hitColliders.Length == 0)
             {
+                // If we move piece[i] will we be attacked?
                 IfWeGo = CheckMove(item);
                 if (IfWeGo)
                     break;
             }
             else
             {
+                // If we attack enemy pice can he attack back by other his piece?
                 IfWeGo = (CheckAttack(item, hitColliders));
                 if (IfWeGo)
                     break;
             }
         }
+        //If we already move bot piece ( attack or move )
+        /* THIS PLACE RETURN ALWAYS TRUE */
         if (IfWeGo)
             return;
-        for (int i = 0; i < GO.Length; ++i)//foreach (GameObject item in GO)
+        // if we don't do anything
+        for (int i = 0; i < Pieces.Length; ++i)//foreach (GameObject item in GO)
         {
-            GameObject item = GO[Random.Range(0, GO.Length)];
-            Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(item.transform.position.x, item.transform.position.y), 1)
+            // Get random bot piece
+            GameObject Piece = Pieces[Random.Range(0, Pieces.Length)];
+            // Get all hit's in radius near this piece
+            Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(Piece.transform.position.x, Piece.transform.position.y), 1)
                  .Where(vval => vval.transform.name.Contains("(Clone)") && !vval.transform.name.Contains(BotName)).ToArray();
-            hits = Physics2D.OverlapCircleAll(new Vector2(item.transform.position.x, item.transform.position.y), 1)
+            // And find only free places
+            hits = Physics2D.OverlapCircleAll(new Vector2(Piece.transform.position.x, Piece.transform.position.y), 1)
             .Where(val => val.transform.name.All(char.IsDigit)).ToArray();
 
             foreach (Collider2D val in hits)
             {
+                // If placse is on valid distance
                 if (Physics2D.OverlapCircleAll(new Vector2(val.transform.position.x, val.transform.position.y), 0.3f).Length == 1)
                 {
-                    item.transform.position = new Vector3(val.transform.position.x, val.transform.position.y, val.transform.position.z - 0.5f);
+                    // Move piece
+                    Piece.transform.position = new Vector3(val.transform.position.x, val.transform.position.y, val.transform.position.z - 0.5f);
                     return;
                 }
             }
@@ -61,11 +73,13 @@ public class BotMind /*: MonoBehaviour*/
 
     private bool CheckMove(GameObject BotObj)
     {
+        // Scan by radius if enemy piece is nearby
         Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(BotObj.transform.position.x, BotObj.transform.position.y), 1)
                  .Where(vval => vval.transform.name.Contains("(Clone)") && !vval.transform.name.Contains(BotName)).ToArray();
+        // Hasn't? return false
         if (hits.Length != 0)
             return false;
-
+        // Else we move bot piece to the new position
         hits = Physics2D.OverlapCircleAll(new Vector2(BotObj.transform.position.x, BotObj.transform.position.y), 1)
             .Where(val => val.transform.name.All(char.IsDigit)).ToArray();
 
@@ -77,7 +91,7 @@ public class BotMind /*: MonoBehaviour*/
                 break;
             }
         }
-
+        // and return True
         return true;
     }
 
@@ -115,9 +129,5 @@ public class BotMind /*: MonoBehaviour*/
             }
         }
         return false;
-    }
-
-    private void LessChekcers()
-    {
     }
 }

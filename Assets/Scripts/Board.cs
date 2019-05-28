@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,6 +25,11 @@ public class Board : MonoBehaviour
     // Last touched object
     private GameObject LstTouchedObject = null;
 
+    // Currect touched object
+    private Vector3 touchPosWorld;
+
+    // Phase of touching
+    private readonly TouchPhase touchPhase = TouchPhase.Ended;
 
     //Bot mid
     private BotMind BM0;
@@ -37,11 +40,11 @@ public class Board : MonoBehaviour
 
     #endregion Global components
 
-    // Use this for initialization
     private void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;  // Never sleep
         GenerateBoard();                                // Create board for game and place there checkers
+        // Bot initialization
         BM0 = new BotMind(PlayersNames[0]);
         BM1 = new BotMind(PlayersNames[1]);
         BM2 = new BotMind(PlayersNames[2]);
@@ -52,6 +55,8 @@ public class Board : MonoBehaviour
     {
         try
         {
+            #region IfBotPlay
+
             if (BM0.BotName == PlayersNames[Turn - 1])
             {
                 BM0.WhereWeGo();
@@ -67,24 +72,33 @@ public class Board : MonoBehaviour
                 BM2.WhereWeGo();
                 NextTurn();
             }
-            if (Input.GetKey(KeyCode.Escape)) // If player touch escape on phone
-            {
-                // Create winodws with word " Are you sure want exit from game? "
 
-                //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-            }
+            #endregion IfBotPlay
 
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == touchPhase) // If we touch something
+            //if (Input.GetKey(KeyCode.Escape)) // If player touch escape on phone
+            //{
+            // Create winodws with word " Are you sure want exit from game? "
+
+            //UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+            //}
+            // If we touch something
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == touchPhase)
             {
-                touchPosWorld = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position); // Get position were we touch
-                Vector2 touchPosWorld2D = new Vector2(touchPosWorld.x, touchPosWorld.y); // Set touched position to Vector2
-                RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward); // Get information what we touch
-                if (hitInformation.collider != null)  // If object have colider (all visible must have)
+                // Get position were we touch
+                touchPosWorld = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+                // Set touched position to Vector2
+                Vector2 touchPosWorld2D = new Vector2(touchPosWorld.x, touchPosWorld.y);
+                // Get information what we touch
+                RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward);
+                // If object have colider (all visible must have)
+                if (hitInformation.collider != null)
                 {
                     GameObject touchedObject = hitInformation.transform.gameObject;
-                    if (EndGame()) // Someone win?
+                    // Someone win?
+                    if (EndGame())
                     {
                     }
+                    // Nope, play further
                     else
                     {
                         MovePiece(touchedObject);
@@ -127,6 +141,7 @@ public class Board : MonoBehaviour
               {1,0,3,3,3,-1,-1  },
               {0,3,3,3,-1,-1,-1 }
        };
+        // And generate piece on board
         for (sbyte x = 0; x < 7; ++x)
         {
             for (sbyte y = 0; y < 7; ++y)
@@ -185,20 +200,25 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    // Some SHIT here
+    // Some REALY SHIT here
     private void MovePiece(GameObject touchedObject)
     {
+        // Сheck if we touch our piece or we touch free board place
         if (touchedObject.name.Contains(PlayersNames[Turn - 1]) || touchedObject.name.ToString().All(char.IsDigit))
         {
-            if (LstTouchedObject != null && LstTouchedObject.name.Equals(touchedObject.name)) // see if last touched object is not touched object
+            // See if last touched object is not touched object
+            if (LstTouchedObject != null && LstTouchedObject.name.Equals(touchedObject.name))
             {
-                LstTouchedObject.GetComponent<Renderer>().material.color = Color.white; // clear color of piece
+                // clear color of piece
+                LstTouchedObject.GetComponent<Renderer>().material.color = Color.white;
                 LstTouchedObject = null;
             }
-            else if (!touchedObject.name.ToString().All(char.IsDigit)) // if we touched piece
+            // if we touched our piece to pickup
+            else if (!touchedObject.name.ToString().All(char.IsDigit))
             {
+                // Last touched object will be our toched piece
                 LstTouchedObject = touchedObject;
-                // Set color of selected piece
+                // Set color of selected piece to new one
                 LstTouchedObject.GetComponent<Renderer>().material.color = new Color32(255, 215, 0, 255);//new Color(1.0f, 0.92f, 0.016f, 1.0f);
             }
             // if we want to move our piece to other position
@@ -206,7 +226,9 @@ public class Board : MonoBehaviour
             {
                 if (CheckMove(touchedObject) == true)
                 {
+                    // Play some shit
                     //GetComponent<AudioSource>().Play();
+                    // Move to new position
                     LstTouchedObject.transform.position = new Vector3(touchedObject.transform.position.x, touchedObject.transform.position.y, touchedObject.transform.position.z - 0.5f);
                     LstTouchedObject.GetComponent<Renderer>().material.color = Color.white;
                     LstTouchedObject = null;
@@ -224,13 +246,16 @@ public class Board : MonoBehaviour
 
     private bool CheckMove(GameObject touchedObject)
     {
-        bool push = Attack(touchedObject);
+        // will we attack?
+        bool AttackMode = Attack(touchedObject);
         // Set radius ( just move or atack )
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y), push ? 0.7f : 1.4f);
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y), AttackMode ? 0.7f : 1.4f);
         foreach (Collider2D value in hitColliders)
         {
-            if (value.gameObject.transform.position.Equals(touchedObject.transform.position) && push)
+            // Can we Attack and move piece to new position ( finally test )
+            if (value.gameObject.transform.position.Equals(touchedObject.transform.position) && AttackMode)
             {
+                // check if distance is valid
                 if (Vector2.Distance(new Vector2(LstTouchedObject.transform.position.x, LstTouchedObject.transform.position.y), new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y)) < 3.4)
                 {
                     return true;
@@ -238,19 +263,24 @@ public class Board : MonoBehaviour
                 else
                     return false;
             }
+            // If new position is last position what we toched, we canceled our selected piece and color will return to normal
             else if (value.gameObject.transform.position == LstTouchedObject.transform.position)
                 return true;
         }
         return false;
     }
 
+    // Сheck if we can attack and then attack...
     private bool Attack(GameObject touchedObject)
     {
+        // Can we attack?
         if (Vector2.Distance(new Vector2(LstTouchedObject.transform.position.x, LstTouchedObject.transform.position.y),
                              new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y)) > 3.2)//3.2 work Good but 1 not work (right TOP)
             return false;
+        // Check what piece was attackated
         RaycastHit2D[] hits = Physics2D.LinecastAll(new Vector2(LstTouchedObject.transform.position.x, LstTouchedObject.transform.position.y),
                                                     new Vector2(touchedObject.transform.position.x, touchedObject.transform.position.y));
+        // And remove it
         foreach (RaycastHit2D value in hits)
         {
             if (value.transform.name.Contains("(Clone)"))
@@ -306,9 +336,11 @@ public class Board : MonoBehaviour
                 }
             }
         }
+        //if we don't attack anything in end
         return false;
     }
 
+    // Just next turn nothing interesting here
     private void NextTurn()
     {
         if (EndGame() == true)
