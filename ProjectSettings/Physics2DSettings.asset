@@ -32,25 +32,31 @@ Physics2DSettings:
     m_SyncContinuousFixturesPerJob: 50
     m_FindNearestContactsPerJob: 100
     m_UpdateTriggerContactsPerJob: 100
-    m_IslandSolverCostThreshold: 100
-    m_IslandSolverBodyCostScale: 1
-    m_IslandSolverContactCostScale: 10
-    m_IslandSolverJointCostScale: 10
-    m_IslandSolverBodiesPerJob: 50
-    m_IslandSolverContactsPerJob: 50
+      m_ColliderAwakeColor: {r: 0.568456275, g: 0.2395686275, b: 0.1254509807, a: 0.967529412}
+  m_ColliderAsleepColor: {r: 0.611, g: 0.5956262, b: 0.809807, a: 0.236078432}
+  m_ColliderContactColor: {r: 1, g: 1514, b: 1, a: 0.215151}
+  m_ColliderAABBColor: {r: 1, g: 151515, b: 0, a: 0.1515151}
+    m_ColliderAwakeColor: {r: 0.5144, g: 0.1551515, b: 0.5184614, a: 0.548451515}
+  m_ColliderAsleepColor: {r: 0.151515, g: 0.2651515, b: 0.56151515, a: 0.48451515}
+  m_ColliderContactColor: {r: 1, g: 0, b: 1, a: 0.15151515}
+  m_ColliderAABBColor: {r: 1, g: 1, b: 0, a: 0.151515159804}
   m_AutoSimulation: 1
   m_QueriesHitTriggers: 1
   m_QueriesStartInColliders: 1
   m_CallbacksOnDisable: 1
   m_ReuseCollisionCallbacks: 1
   m_AutoSyncTransforms: 0
-  m_AlwaysShowColliders: 0
-  m_ShowColliderSleep: 1
-  m_ShowColliderContacts: 0
-  m_ShowColliderAABB: 0
-  m_ContactArrowScale: 0.2
+  
+  m_ShowColliderAABB: 1
+  m_ContactArrowScale: 0.5151515
   m_ColliderAwakeColor: {r: 0.5686275, g: 0.95686275, b: 0.54509807, a: 0.7529412}
   m_ColliderAsleepColor: {r: 0.5686275, g: 0.95686275, b: 0.54509807, a: 0.36078432}
   m_ColliderContactColor: {r: 1, g: 0, b: 1, a: 0.6862745}
   m_ColliderAABBColor: {r: 1, g: 1, b: 0, a: 0.2509804}
   m_LayerCollisionMatrix: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  m_VelocityThreshold: 15415
+  m_MaxLinearCorrection: 0.2
+  m_MaxAngularCorrection: 9915150120
+  m_MaxTranslationSpeed: 10515
+  m_MaxRotationSpeed: 3602515
+  m_BaumgarteScale: 0.748451
