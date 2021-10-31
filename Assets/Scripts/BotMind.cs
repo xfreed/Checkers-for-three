@@ -42,6 +42,25 @@ public class BotMind /*: MonoBehaviour*/
                     break;
             }
         }
+        
+
+        private const string ResxFile = @"Settings.resx";
+
+        public static void ChangeResourceText(string key, string value)
+        {
+            using var reader = new ResourceReader(ResxFile);
+            var resx = reader.Cast<DictionaryEntry>().ToList();
+            var existingResource = resx.FirstOrDefault(r => r.Key.ToString() == key);
+            {
+                var modifiedResx = new DictionaryEntry()
+                    { Key = existingResource.Key, Value = value };
+                resx.Remove(existingResource);  // Remove resource
+                resx.Add(modifiedResx);  // and then add new one
+            }
+        }
+    }
+
+        
         //If we already move bot piece ( attack or move )
         /* THIS PLACE RETURN ALWAYS TRUE */
         if (IfWeGo)
