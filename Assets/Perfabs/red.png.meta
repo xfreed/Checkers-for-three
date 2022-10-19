@@ -4,6 +4,7 @@ TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 9
+  serializedVersion: 9
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -35,9 +36,22 @@ TextureImporter:
     aniso: -1
     mipBias: -100
     wrapU: 1
-    wrapV: 1
-    wrapW: 1
-  nPOTScale: 0
+streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
@@ -58,9 +72,20 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -75,12 +100,24 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites: []
+    outline: []
+    physicsShape: []
+    bones: []
     spriteID: c091bf7476227a54eb05820fcbd2cad1
     vertices: []
     indices: 
     edges: []
     weights: []
+    weights: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant:  
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
   userData: 
