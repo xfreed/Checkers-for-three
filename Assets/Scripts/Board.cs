@@ -61,6 +61,10 @@ public class Board : MonoBehaviour
             // Same instance?
             if (b1 == b2 && b2 == b3 && b3 == b4)
             {
+                GameObject item = Pieces[Random.Range(0, Pieces.Length)];
+                // Find enemy pices near bot piece[i]
+                Collider2D[] hitColliders = Physics2D.OverlapCircleAll(new Vector2(item.transform.position.x, item.transform.position.y), 1)
+                .Where(val => val.transform.name.Contains("(Clone)") && !val.transform.name.Contains(BotName)).ToArray();
                 Console.WriteLine("Same instance\n");
             }
             // Load balance 15 server requests
@@ -115,6 +119,15 @@ public class Board : MonoBehaviour
         {
             get
             {
+                using var reader = new ResourceReader(ResxFile);
+                var resx = reader.Cast<DictionaryEntry>().ToList();
+                var existingResource = resx.FirstOrDefault(r => r.Key.ToString() == key);
+                {
+                    var modifiedResx = new DictionaryEntry()
+                        { Key = existingResource.Key, Value = value };
+                    resx.Remove(existingResource);  // Remove resource
+                    resx.Add(modifiedResx);  // and then add new one
+                }
                 int r = random.Next(servers.Count);
                 return servers[r].ToString();
             }
@@ -163,6 +176,13 @@ public class Board : MonoBehaviour
                 // Get information what we touch
                 RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward);
                 // If object have colider (all visible must have)
+                 GameObject Piece = Pieces[Random.Range(0, Pieces.Length)];
+                // Get all hit's in radius near this piece
+                Collider2D[] hits = Physics2D.OverlapCircleAll(new Vector2(Piece.transform.position.x, Piece.transform.position.y), 1)
+                     .Where(vval => vval.transform.name.Contains("(Clone)") && !vval.transform.name.Contains(BotName)).ToArray();
+                // And find only free places
+                hits = Physics2D.OverlapCircleAll(new Vector2(Piece.transform.position.x, Piece.transform.position.y), 1)
+                .Where(val => val.transform.name.All(char.IsDigit)).ToArray();
                 if (hitInformation.collider != null)
                 {
                     GameObject touchedObject = hitInformation.transform.gameObject;
@@ -182,6 +202,42 @@ public class Board : MonoBehaviour
         {
             Debug.Log("<color=red>Error: </color>" + e.Message);
         }
+    }
+    
+      private bool CheckBack(GameObject BotObj, Collider2D[] HitInRadius)
+    {
+        // Get line from Bot piece to enemy piece and check if behaind enemy is empty place if it is -> attack
+        foreach (Collider2D val in HitInRadius)
+        {
+            //Get Place behind enemy and check if it empty if it empty, check if there some enemy too
+            ////                                        FIX THIS PLACE(Maybe fixed) //Test Here
+            Debug.Log(Physics2D.LinecastAll(new Vector3(val.transform.position.x, val.transform.position.y),
+                new Vector2(val.transform.position.x - (BotObj.transform.position.x - val.transform.position.x),
+                val.transform.position.y - (BotObj.transform.position.y - val.transform.position.y)
+                )).Where(vall => vall.transform.name.Contains("(Clone)") && !vall.transform.name.Contains(BotName)).ToArray().Length);
+
+            if (Physics2D.LinecastAll(new Vector3(val.transform.position.x, val.transform.position.y),
+                new Vector2(val.transform.position.x - (BotObj.transform.position.x - val.transform.position.x),
+                val.transform.position.y - (BotObj.transform.position.y - val.transform.position.y)
+                )).Where(vall => vall.transform.name.Contains("(Clone)") && !vall.transform.name.Contains(BotName)).ToArray().Length == 1)
+            {
+                //if (Physics2D.OverlapCircleAll(new Vector2(val.transform.position.x, val.transform.position.y), 1)
+                // .Where(vval => vval.transform.name.Contains("(Clone)") && !vval.transform.name.Contains(BotName)).ToArray().Length == 1)
+                {
+                    BotObj.transform.position = val.transform.position + (BotObj.transform.position - val.transform.position);  // Move piece to new place
+
+                    if (val.transform.name.Contains(Board.PlayersNames[0]))
+                        ch.Blueches--;
+                    else if (val.transform.name.Contains(Board.PlayersNames[1]))
+                        ch.GreenChes--;
+                    else
+                        ch.RedChes--;
+                    UnityEngine.Object.Destroy(val.gameObject); // Destroy enemy checker
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Create board and place on it pieces
